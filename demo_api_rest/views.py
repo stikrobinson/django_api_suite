@@ -54,14 +54,15 @@ class DemoRestApiItem(APIView):
         data = request.data
         if 'id' not in data or data['id'] != item_id:
             return Response({'error': 'El campo id es obligatorio y debe coincidir.'}, status=status.HTTP_400_BAD_REQUEST)
+        if 'name' not in data or 'email' not in data:
+            return Response({'error': 'Faltan campos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Reemplaza todos los campos excepto el id
         item.update({
-            'name': data.get('name', ""),
-            'email': data.get('email', ""),
+            'name': data['name'],
+            'email': data['email'],
             'is_active': data.get('is_active', True)
         })
-
         return Response({'message': 'Elemento actualizado correctamente.', 'data': item}, status=status.HTTP_200_OK)
 
     def patch(self, request, item_id):
